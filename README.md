@@ -7,5 +7,5 @@ php版的梯子， 先挖个坑, 现在只是个demo
 pecl install swoole
 ```
 
-#[SOCKS Protocol Version 5](https://github.com/exinnet)
+#[SOCKS Protocol Version 5](https://tools.ietf.org/html/rfc1928)
 
