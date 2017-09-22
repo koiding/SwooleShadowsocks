@@ -8,11 +8,8 @@
 ```
 pecl install swoole
 ```
-
-
 #socks5协议详情
 [SOCKS Protocol Version 5](https://tools.ietf.org/html/rfc1928)
-
 
 #用法
 ```
@@ -22,6 +19,9 @@ php start_ss_local.php //运行Shadowsocks的客户端
 
 curl http://httpbin.org/ip -x 本地ip:本地端口
 ```
+收获
+- 学习了php中对二进制数据的处理方法。[pack](http://www.php.net/manual/zh/function.pack.php) [unpack](http://www.php.net/manual/zh/function.unpack.php)
+- 学习到了php中的解构方法，即将一个数组作为可变参数传递给函数。[...(三个点)](http://php.net/manual/zh/functions.arguments.php)
 
 
 
