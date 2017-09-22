@@ -10,14 +10,26 @@ class ShadowSocks
     protected $server = null;
     protected $fdset = [];
     protected $clientset = [];
+    protected $server_ip = '';
+    protected $server_port = 0;
 
-    public function __construct(string $ip, int $port)
+    public function __construct($conf)
     {
+        $ip = $conf['server_id'] ?? '0.0.0.0';
+        $port = $conf['server_port'] ?? 9988;
+        $this->server_ip = $ip;
+        $this->server_port = $port;
         $this->server = new Swoole\Server($ip, $port, SWOOLE_BASE);
+        $this->server->on('Start', [$this, 'onStart']);
         $this->server->on('Connect', [$this, 'onConnect']);
         $this->server->on('Receive', [$this, 'onReceive']);
         $this->server->on('Close', [$this, 'onClose']);
         $this->server->start();
+    }
+
+    public function onStart(Swoole\Server $server)
+    {
+        echo sprintf("Server Start\nIP:\t%s\nPort:\t%d\n", $this->server_ip, $this->server_port);
     }
 
     public function onConnect(Swoole\Server $server, int $fd, int $from_id)
@@ -49,9 +61,10 @@ class ShadowSocks
                         break;
                     case SOCKS_DOMAIN://domain
                         $host = '';
-                        for($i = 5; $i < hexdec($data[4]); $i++)
+                        $domains = array_slice($data, 5, -2);
+                        foreach($domains as $item)
                         {
-                            $host .= chr($data[$i]);
+                            $host .= chr($item);
                         }
                         break;
                     case SOCKS_IPV6://ipv6
@@ -59,7 +72,6 @@ class ShadowSocks
                 }
     
                 $port = $data[$len - 2] << 8 | $data[$len - 1];
-
                 $client = new Swoole\Client(SWOOLE_SOCK_TCP);
                 if (!$client->connect($host, $port, -1))
                 {
